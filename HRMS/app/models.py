@@ -1,24 +1,44 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
-# accounts/models.py
-
-from django.db import models
-
-class User(models.Model):
-    choices = (
-        ('Employee', 'Employee'),
-        ('HR', 'HR'),
+class UserProfile(models.Model):
+    ROLE_CHOICES = (
         ('Admin', 'Admin'),
+        ('HR', 'HR'),
+        ('Employee', 'Employee'),
     )
-    email = models.EmailField(unique=True)
-    full_name = models.CharField(max_length=100)
-    password = models.CharField(max_length=128)  # store hashed passwords manually
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Employee')
     position = models.CharField(max_length=100, blank=True)
     phone_number = models.CharField(max_length=15, blank=True)
-    role = models.CharField(max_length=50, default='Employee', choices=choices)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    joined_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.full_name.split(' ')[0]
+        return f"{self.user.username} - {self.role}"
+
+
+class Leave(models.Model):
+    LEAVE_TYPES = [
+        ('Sick', 'Sick'),
+        ('Casual', 'Casual'),
+        ('Paid', 'Paid'),
+    ]
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leaves')
+    leave_type = models.CharField(max_length=20, choices=LEAVE_TYPES)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    reason = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.leave_type} ({self.status})"
