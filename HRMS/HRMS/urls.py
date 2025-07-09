@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import RegisterView, MyLeavesView, ApplyLeaveView,LoginView
+from rest_framework_simplejwt.views import TokenRefreshView
+from app.views import RegisterView, MyLeavesView, ApplyLeaveView,LoginView,ManageLeaveView,LogoutView,ProfileView,UpdateProfileView,MarkAttendanceView,MyAttendanceView,AllAttendanceView,DepartmentView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +26,16 @@ urlpatterns = [
     # path('', CustomLoginView.as_view(), name='login'),
     path('my_leaves/', MyLeavesView.as_view(), name='my_leaves'),
     path('apply_leave/', ApplyLeaveView.as_view(), name='apply_leave'),
+    path('all_leaves/', ManageLeaveView.as_view(), name='all_leaves'),
+    path('my-leaves/', MyLeavesView.as_view(), name='my-leaves'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('profile/', ProfileView.as_view(), name='user-profile'),
+    path('profile/update/', UpdateProfileView.as_view(), name='update-profile'),
+    path('attendance/mark/', MarkAttendanceView.as_view(), name='mark-attendance'),
+    path('attendance/my/', MyAttendanceView.as_view(), name='my-attendance'),
+    path('attendance/all/', AllAttendanceView.as_view(), name='all-attendance'),
+    path('departments/', DepartmentView.as_view(), name='create-department'),
+
+
 ]

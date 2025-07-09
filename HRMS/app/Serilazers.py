@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Leave, UserProfile
+from .models import Leave, UserProfile, Attendance,Department
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
@@ -84,13 +84,55 @@ class LoginSerializer(serializers.Serializer):
             "is_active": profile.is_active
         }
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
+
     class Meta:
         model = UserProfile
-        fields = ['role', 'position', 'phone_number', 'salary', 'is_active']
+        fields = ['department', 'first_name', 'last_name', 'phone_number', 'position']
 
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+
+        # Update built-in User model fields
+        user = instance.user
+        for attr, value in user_data.items():
+            setattr(user, attr, value)
+        user.save()
+
+        # Update UserProfile fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+class UserProfileSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email')
+    username = serializers.CharField(source='user.username')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            'username', 'email', 'first_name', 'last_name',
+            'phone_number', 'position', 'role'
+        ]
+
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ['id', 'name', 'description']
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['id', 'date', 'check_in_time']
+        read_only_fields = ['date', 'check_in_time']
 
 class LeaveApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Leave
-        fields = ['leave_type', 'start_date', 'end_date', 'reason']
+        fields = "__all__"
