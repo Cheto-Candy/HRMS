@@ -20,6 +20,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from app.views import RegisterView, MyLeavesView, ApplyLeaveView,LoginView,ManageLeaveView,LogoutView,ProfileView,UpdateProfileView,MarkAttendanceView,MyAttendanceView,AllAttendanceView,DepartmentView
 
 urlpatterns = [
+    
     path('admin/', admin.site.urls),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
