@@ -98,6 +98,7 @@ class AllAttendanceView(APIView):
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
 
+
 class DepartmentView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsAdminOrHR]
 

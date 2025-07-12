@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from app.views import RegisterView, MyLeavesView, ApplyLeaveView,LoginView,ManageLeaveView,LogoutView,ProfileView,UpdateProfileView,MarkAttendanceView,MyAttendanceView,AllAttendanceView,DepartmentView
-
+# routes for the app
 urlpatterns = [
     
     path('admin/', admin.site.urls),
